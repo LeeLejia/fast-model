@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 	"time"
+	sql2 "database/sql"
 )
 
 type DbModel struct {
@@ -36,6 +37,7 @@ type SqlController struct {
 	// 将queryColumns返回的对象赋值到具体model对象,对应QueryColumns
 	QueryField2Obj func(fields []interface{}) interface{}
 }
+
 // 获取一个model对象
 func GetModel(sqlController SqlController) (DbModel,error){
 	if sqlController.TableName==""{
@@ -65,10 +67,12 @@ func GetModel(sqlController SqlController) (DbModel,error){
 	sqlController.queryPlaceHold = strings.Join(qcs,",")
 	return DbModel{sc:sqlController},nil
 }
+
 // 获取表名
 func (m *DbModel) GetTableName() string {
 	return m.sc.TableName
 }
+
 // 设置插入列
 func (m *DbModel) SetInsertColumns(columns []string,insertFileds func(obj interface{}) []interface{}){
 	ics:=make([]string,len(columns))
@@ -80,8 +84,9 @@ func (m *DbModel) SetInsertColumns(columns []string,insertFileds func(obj interf
 	m.sc.insertColumns = strings.Join(columns,",")
 	m.sc.InSertFields = insertFileds
 }
+
 // 设置搜索列
-func (m *DbModel) SetQueryColumns(columns []string){
+func (m *DbModel) SetQueryColumns(columns []string,queryFileds2Obj func(fields []interface{}) interface{}){
 	qcs :=make([]string,len(columns))
 	for i:=range columns{
 		qcs[i]=fmt.Sprintf("$%d",i+1)
@@ -89,7 +94,9 @@ func (m *DbModel) SetQueryColumns(columns []string){
 	m.sc.QueryColumns = columns
 	m.sc.queryPlaceHold = strings.Join(qcs,",")
 	m.sc.queryColumns = strings.Join(m.sc.QueryColumns,",")
+	m.sc.QueryField2Obj = queryFileds2Obj
 }
+
 // 插入操作
 func (m *DbModel) Insert(obj interface{}) (err error) {
 	stmt, err := Session.Prepare(fmt.Sprintf("INSERT INTO %s(%s) "+
@@ -101,21 +108,24 @@ func (m *DbModel) Insert(obj interface{}) (err error) {
 	_, err = stmt.Exec(m.sc.InSertFields(obj)...)
 	return
 }
+
 /**
 获取数据
 conditionAndLimit：where id > $1 order by  limit $2 offset $3
  */
-func (m *DbModel) Query(condiAOrderALimit string, args ...interface{}) (result []interface{}, err error) {
-	sql:=fmt.Sprintf("SELECT %s FROM %s %s", m.sc.queryColumns, m.GetTableName(), condiAOrderALimit)
+func (m *DbModel) Query(cond DbCondition) (result []interface{}, err error) {
+	sql:=fmt.Sprintf("SELECT %s FROM %s %s", m.sc.queryColumns, m.GetTableName(), cond.GetCondStr())
 	fmt.Println(sql)
 	stmt, err := Session.Prepare(sql)
 	if err != nil {
 		return result, err
 	}
-	rows,err:=stmt.Query(args...)
+	defer stmt.Close()
+	rows,err:=stmt.Query(cond.GetParams()...)
 	if err != nil {
 		return result, err
 	}
+	defer rows.Close()
 	for rows.Next() {
 		refs := make([]interface{},0, len(m.sc.QueryColumns))
 		for  range m.sc.QueryColumns {
@@ -133,47 +143,87 @@ func (m *DbModel) Query(condiAOrderALimit string, args ...interface{}) (result [
 	}
 	return result, err
 }
+
 /**
 获取记录数量
 condition:where id > $1 or name == $2
 args: 5 'cjwddz'
  */
-func (m *DbModel) Count(condition string,args ...interface{}) (count int, err error) {
+func (m *DbModel) Count(cond DbCondition) (count int, err error) {
 	count = 0
-	stmt,err:= Session.Prepare(fmt.Sprintf("SELECT COUNT(*) FROM %s %s", m.GetTableName(), condition))
+	stmt,err:= Session.Prepare(fmt.Sprintf("SELECT COUNT(*) FROM %s %s", m.GetTableName(), cond.GetCondStr()))
 	if err!=nil{
 		return 0,err
 	}
-	err = stmt.QueryRow(args...).Scan(&count)
+	defer stmt.Close()
+	err = stmt.QueryRow(cond.GetParams()...).Scan(&count)
 	return
 }
+func (m *DbModel) CountAll() (count int, err error){
+	count = 0
+	stmt,err:= Session.Prepare(fmt.Sprintf("SELECT COUNT(*) FROM %s", m.GetTableName()))
+	if err!=nil{
+		return 0,err
+	}
+	defer stmt.Close()
+	err = stmt.QueryRow().Scan(&count)
+	return
+}
+
 /**
 更新数据
 setAndCondition: SET id = $1,name=$2 where id = $3
 args: 3 'cjwddz' 5
  */
-func (m *DbModel) Update(setAndCondition string,args ...interface{}) (err error) {
-	stmt, err := Session.Prepare(fmt.Sprintf("UPDATE %s %s", m.GetTableName(), setAndCondition))
+func (m *DbModel) Update(setCond DbSetCondition) (err error) {
+	stmt, err := Session.Prepare(fmt.Sprintf("UPDATE %s %s", m.GetTableName(),setCond.GetSetCondStr()))
 	if err != nil {
 		return
 	}
-	_, err = stmt.Exec(args...)
+	defer stmt.Close()
+	_, err = stmt.Exec(setCond.GetSetCondParams()...)
 	return
 }
+
 /**
 删除数据
 condition: where id = $3
 args: 3 'cjwddz' 5
  */
-func (m *DbModel) Delete(condition string,args ...interface{})error{
-	stmt,err:= Session.Prepare(fmt.Sprintf("DELETE FROM %s %s", m.GetTableName(), condition))
+func (m *DbModel) Delete(cond DbCondition)error{
+	stmt,err:= Session.Prepare(fmt.Sprintf("DELETE FROM %s %s", m.GetTableName(), cond.GetCondStr()))
 	if err!=nil{
 		return err
 	}
+	defer stmt.Close()
+	_,err = stmt.Exec(cond.GetParams()...)
+	return err
+}
+
+/**
+	执行语句
+ */
+func (m *DbModel) Exe(sql string,args ...interface{})error{
+	stmt,err:= Session.Prepare(sql)
+	if err!=nil{
+		return err
+	}
+	defer stmt.Close()
 	_,err = stmt.Exec(args...)
 	return err
 }
 
+/**
+	执行语句，并返回结果
+ */
+func (m *DbModel) ExeForResult(sql string,args ...interface{})(*sql2.Rows, error){
+	stmt,err:= Session.Prepare(sql)
+	if err!=nil{
+		return nil,err
+	}
+	defer stmt.Close()
+	return stmt.Query(args)
+}
 
 /**
 安全断言

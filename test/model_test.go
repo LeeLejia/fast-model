@@ -6,6 +6,7 @@ import (
 	"github.com/bitly/go-simplejson"
 	"time"
 	".."
+	"github.com/bmizerany/assert"
 )
 type T_app struct {
 	ID            int64            `json:"id"`
@@ -24,11 +25,8 @@ type T_app struct {
 }
 func TestT(t *testing.T) {
 	// 配置数据库
-	err:=model.InitDB("localhost", "5432", "postgres", "password", "dbname","postgres")
-	if err!=nil{
-		fmt.Print("数据库配置错误。")
-		t.Fail()
-	}
+	err:=model.InitDB("localhost", "5432", "postgres", "password", "dbName","postgres")
+	assert.Equal(t,err,nil)
 	// 配置数据库模型，其中
 	// InsertColumns  表示对数据库进行插入操作时插入的字段
 	// QueryColumns   表示对数据库进行查询操作的时候获取的字段
@@ -45,69 +43,84 @@ func TestT(t *testing.T) {
 		InSertFields:   InsertFields,
 		QueryField2Obj: QueryField2Obj,
 	}
+	// 获取数据操作模型
 	m,err:=model.GetModel(sc)
-	if err!=nil{
-		fmt.Println(err.Error())
-		return
-	}
-	app:=&T_app{
-		Icon:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAADhUlEQVRoQ+1aTUwTQRj9ZkvZtkARhGi0RBHDT6IBE0JMSKhCOMihSBC5ICoxJurVxJP8yJEYL0QTD0qACxKCePBCFCXpBQ4UgyEQFVSKVNTYSmmXdnfMNE6zbFpYoGVbXG7tPmbe+973vkk6iyDO/1Ao/o39XDWAUBRb2hhbdx07JOW0TkBDv+cMI8BTQHA0tsj/Y4NhXmDgam+d/g3lFxQQII9hJCaJS0gJCM5SEUEBjX2euZitvLSqGOa76/XZ5OuAgIY+7jyDhMF4qD7lKGCmpreefR4Q0NjnaQUELfEkADC0ddfrW1UBirmmOqBY6YNngpoBZT1QM6Bs/UE9B5Q24P92oOFUwigCwD0TfrPUCUuBxmpKZXzS7987BP24nS9YXQMjeSYXF9bp7U6hY+lotqWCzSULP7CuTdoWhULxJp0WdjKFRYV/ODyJEML0WXIiFGEMznuvOcenXzhXLi7iAu6YtaM56cxBsrBjRVi+O+wrDSXgcr933d4GLTg7LewKAOCmAc5EBWyGi7iArgs61/Qyb7O7MFQeTyi7MeR10bYgm4UjRp7dOq19W5KlMd9+6bW3VLA/iFNSAVLcshsOhxSxnRYyZzNjTcWJJW2vuNkVDgwdVaxp+IN/tHfCX0Y3kSOAkJaLi6gD96vYsRQW9l0f5AIZIJ/T9HCItMRmAkh2msvZA2s8dpD/DycgMwnsHed0yRQXMQGGRHA9qtYZxRUnk6T2hLZUHGZKzMVhG908SQsZGgaZMAZX+wj37eNPnCcXFzEBZHSSnuf8eIbjwUMXNrKo6Mtv3krDTImNL/DBnz4IdmpJ0I8t8PmrPkgVZ2UzXMQEPKll7X4B3O+WhEXxovmZTBoJIw3zRr0tZ1rJPuG3EmI6+wemfNYX0/y6sZmzH800l7N5tLViUkB7pdaalao5eXPIi2kLiCv1uIadTWDAsNF8l1ZWrtAdtxAJ70OLDn918lPSQ4suTvNBwnytWAvh5rsiLURO0LxMZs7uxBnf3Tg4LsVkxJgUHbiNLPJMLG784zBpPTm4HTsgO1S7DdxKiHebm6z9VAGyyhRFkOpAFIsra2nVAVlliiJIdSCKxZW19J5yIO4v+Yhll5555hHAEVn2KQzCAJ97LuoDl/F756KbqCG39QhDV6w6QSqPEVwJ+aqBuCsCmYixlz0EYGzkYlvavSHfVlG4xbe0/V/rXqJPNUQmQgAAAABJRU5ErkJggg==",
-		AppId:"AGJLJWEFJ298R5pF",
-		Name:"appName1234",
-		Version:"1.0",
-		Describe:"a app for test",
-		Developer:15,
-		Valid:true,
-		File:"XXXXXXXXXXXXX",
-		Src:"XXXXXX",
-		Expend:simplejson.New(),
-		DownloadCount:124,
-		CreatedAt:time.Now(),
+	assert.Equal(t,err,nil)
+	// 测试数据
+	apps:=[]T_app{
+		{Icon:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAADhUlEQVRoQ+1aTUwTQRj9ZkvZtkARhGi0RBHDT6IBE0JMSKhCOMihSBC5ICoxJurVxJP8yJEYL0QTD0qACxKCePBCFCXpBQ4UgyEQFVSKVNTYSmmXdnfMNE6zbFpYoGVbXG7tPmbe+973vkk6iyDO/1Ao/o39XDWAUBRb2hhbdx07JOW0TkBDv+cMI8BTQHA0tsj/Y4NhXmDgam+d/g3lFxQQII9hJCaJS0gJCM5SEUEBjX2euZitvLSqGOa76/XZ5OuAgIY+7jyDhMF4qD7lKGCmpreefR4Q0NjnaQUELfEkADC0ddfrW1UBirmmOqBY6YNngpoBZT1QM6Bs/UE9B5Q24P92oOFUwigCwD0TfrPUCUuBxmpKZXzS7987BP24nS9YXQMjeSYXF9bp7U6hY+lotqWCzSULP7CuTdoWhULxJp0WdjKFRYV/ODyJEML0WXIiFGEMznuvOcenXzhXLi7iAu6YtaM56cxBsrBjRVi+O+wrDSXgcr933d4GLTg7LewKAOCmAc5EBWyGi7iArgs61/Qyb7O7MFQeTyi7MeR10bYgm4UjRp7dOq19W5KlMd9+6bW3VLA/iFNSAVLcshsOhxSxnRYyZzNjTcWJJW2vuNkVDgwdVaxp+IN/tHfCX0Y3kSOAkJaLi6gD96vYsRQW9l0f5AIZIJ/T9HCItMRmAkh2msvZA2s8dpD/DycgMwnsHed0yRQXMQGGRHA9qtYZxRUnk6T2hLZUHGZKzMVhG908SQsZGgaZMAZX+wj37eNPnCcXFzEBZHSSnuf8eIbjwUMXNrKo6Mtv3krDTImNL/DBnz4IdmpJ0I8t8PmrPkgVZ2UzXMQEPKll7X4B3O+WhEXxovmZTBoJIw3zRr0tZ1rJPuG3EmI6+wemfNYX0/y6sZmzH800l7N5tLViUkB7pdaalao5eXPIi2kLiCv1uIadTWDAsNF8l1ZWrtAdtxAJ70OLDn918lPSQ4suTvNBwnytWAvh5rsiLURO0LxMZs7uxBnf3Tg4LsVkxJgUHbiNLPJMLG784zBpPTm4HTsgO1S7DdxKiHebm6z9VAGyyhRFkOpAFIsra2nVAVlliiJIdSCKxZW19J5yIO4v+Yhll5555hHAEVn2KQzCAJ97LuoDl/F756KbqCG39QhDV6w6QSqPEVwJ+aqBuCsCmYixlz0EYGzkYlvavSHfVlG4xbe0/V/rXqJPNUQmQgAAAABJRU5ErkJggg==",
+			AppId:"AGJLJWEFJ298R5pF",
+			Name:"appName1234",
+			Version:"1.0",
+			Describe:"a app for test",
+			Developer:15,
+			Valid:true,
+			File:"XXXXXXXXXXXXX",
+			Src:"XXXXXX",
+			Expend:simplejson.New(),
+			DownloadCount:124,
+			CreatedAt:time.Now(),},
+		{Icon:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAADhUlEQVRoQ+1aTUwTQRj9ZkvZtkARhGi0RBHDT6IBE0JMSKhCOMihSBC5ICoxJurVxJP8yJEYL0QTD0qACxKCePBCFCXpBQ4UgyEQFVSKVNTYSmmXdnfMNE6zbFpYoGVbXG7tPmbe+973vkk6iyDO/1Ao/o39XDWAUBRb2hhbdx07JOW0TkBDv+cMI8BTQHA0tsj/Y4NhXmDgam+d/g3lFxQQII9hJCaJS0gJCM5SEUEBjX2euZitvLSqGOa76/XZ5OuAgIY+7jyDhMF4qD7lKGCmpreefR4Q0NjnaQUELfEkADC0ddfrW1UBirmmOqBY6YNngpoBZT1QM6Bs/UE9B5Q24P92oOFUwigCwD0TfrPUCUuBxmpKZXzS7987BP24nS9YXQMjeSYXF9bp7U6hY+lotqWCzSULP7CuTdoWhULxJp0WdjKFRYV/ODyJEML0WXIiFGEMznuvOcenXzhXLi7iAu6YtaM56cxBsrBjRVi+O+wrDSXgcr933d4GLTg7LewKAOCmAc5EBWyGi7iArgs61/Qyb7O7MFQeTyi7MeR10bYgm4UjRp7dOq19W5KlMd9+6bW3VLA/iFNSAVLcshsOhxSxnRYyZzNjTcWJJW2vuNkVDgwdVaxp+IN/tHfCX0Y3kSOAkJaLi6gD96vYsRQW9l0f5AIZIJ/T9HCItMRmAkh2msvZA2s8dpD/DycgMwnsHed0yRQXMQGGRHA9qtYZxRUnk6T2hLZUHGZKzMVhG908SQsZGgaZMAZX+wj37eNPnCcXFzEBZHSSnuf8eIbjwUMXNrKo6Mtv3krDTImNL/DBnz4IdmpJ0I8t8PmrPkgVZ2UzXMQEPKll7X4B3O+WhEXxovmZTBoJIw3zRr0tZ1rJPuG3EmI6+wemfNYX0/y6sZmzH800l7N5tLViUkB7pdaalao5eXPIi2kLiCv1uIadTWDAsNF8l1ZWrtAdtxAJ70OLDn918lPSQ4suTvNBwnytWAvh5rsiLURO0LxMZs7uxBnf3Tg4LsVkxJgUHbiNLPJMLG784zBpPTm4HTsgO1S7DdxKiHebm6z9VAGyyhRFkOpAFIsra2nVAVlliiJIdSCKxZW19J5yIO4v+Yhll5555hHAEVn2KQzCAJ97LuoDl/F756KbqCG39QhDV6w6QSqPEVwJ+aqBuCsCmYixlz0EYGzkYlvavSHfVlG4xbe0/V/rXqJPNUQmQgAAAABJRU5ErkJggg==",
+			AppId:"AGJLJWEFJ298R5pF",
+			Name:"appName456",
+			Version:"1.0",
+			Describe:"a app for test",
+			Developer:14,
+			Valid:true,
+			File:"XXXXXXXXXXXXX",
+			Src:"XXXXXX",
+			Expend:simplejson.New(),
+			DownloadCount:124,
+			CreatedAt:time.Now(),},
+		{Icon:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAADhUlEQVRoQ+1aTUwTQRj9ZkvZtkARhGi0RBHDT6IBE0JMSKhCOMihSBC5ICoxJurVxJP8yJEYL0QTD0qACxKCePBCFCXpBQ4UgyEQFVSKVNTYSmmXdnfMNE6zbFpYoGVbXG7tPmbe+973vkk6iyDO/1Ao/o39XDWAUBRb2hhbdx07JOW0TkBDv+cMI8BTQHA0tsj/Y4NhXmDgam+d/g3lFxQQII9hJCaJS0gJCM5SEUEBjX2euZitvLSqGOa76/XZ5OuAgIY+7jyDhMF4qD7lKGCmpreefR4Q0NjnaQUELfEkADC0ddfrW1UBirmmOqBY6YNngpoBZT1QM6Bs/UE9B5Q24P92oOFUwigCwD0TfrPUCUuBxmpKZXzS7987BP24nS9YXQMjeSYXF9bp7U6hY+lotqWCzSULP7CuTdoWhULxJp0WdjKFRYV/ODyJEML0WXIiFGEMznuvOcenXzhXLi7iAu6YtaM56cxBsrBjRVi+O+wrDSXgcr933d4GLTg7LewKAOCmAc5EBWyGi7iArgs61/Qyb7O7MFQeTyi7MeR10bYgm4UjRp7dOq19W5KlMd9+6bW3VLA/iFNSAVLcshsOhxSxnRYyZzNjTcWJJW2vuNkVDgwdVaxp+IN/tHfCX0Y3kSOAkJaLi6gD96vYsRQW9l0f5AIZIJ/T9HCItMRmAkh2msvZA2s8dpD/DycgMwnsHed0yRQXMQGGRHA9qtYZxRUnk6T2hLZUHGZKzMVhG908SQsZGgaZMAZX+wj37eNPnCcXFzEBZHSSnuf8eIbjwUMXNrKo6Mtv3krDTImNL/DBnz4IdmpJ0I8t8PmrPkgVZ2UzXMQEPKll7X4B3O+WhEXxovmZTBoJIw3zRr0tZ1rJPuG3EmI6+wemfNYX0/y6sZmzH800l7N5tLViUkB7pdaalao5eXPIi2kLiCv1uIadTWDAsNF8l1ZWrtAdtxAJ70OLDn918lPSQ4suTvNBwnytWAvh5rsiLURO0LxMZs7uxBnf3Tg4LsVkxJgUHbiNLPJMLG784zBpPTm4HTsgO1S7DdxKiHebm6z9VAGyyhRFkOpAFIsra2nVAVlliiJIdSCKxZW19J5yIO4v+Yhll5555hHAEVn2KQzCAJ97LuoDl/F756KbqCG39QhDV6w6QSqPEVwJ+aqBuCsCmYixlz0EYGzkYlvavSHfVlG4xbe0/V/rXqJPNUQmQgAAAABJRU5ErkJggg==",
+			AppId:"AGJLJWEFJ298R5pF",
+			Name:"appName456",
+			Version:"1.0",
+			Describe:"a app for test",
+			Developer:14,
+			Valid:true,
+			File:"XXXXXXXXXXXXX",
+			Src:"XXXXXX",
+			Expend:simplejson.New(),
+			DownloadCount:124,
+			CreatedAt:time.Now(),},
 	}
 	// 插入数据
-	err=m.Insert(app)
-	if err!=nil{
-		fmt.Println(err.Error())
-		return
+	for _,app:=range apps{
+		err=m.Insert(app)
+		assert.Equal(t,err,nil)
 	}
-	// 查询数量
-	count,err:=m.Count("")
-	if err!=nil{
-		fmt.Println(err.Error())
-		return
-	}
+	// 查询t_app表记录数
+	count,err:=m.CountAll()
+	assert.Equal(t,err,nil)
 	fmt.Println(fmt.Sprintf("count:%d",count))
-	count,err=m.Count("where id>$1",0)
-	if err!=nil{
-		fmt.Println(err.Error())
-		return
-	}
+
+	// 新建条件
+	cond:=model.DbCondition{}
+	// 如果是从request中获取条件，参考condition_test.go
+	cond.And2(">","id",0).And2("=","name","appName1234")
+	count,err=m.Count(cond)
+	assert.Equal(t,err,nil)
 	fmt.Println(fmt.Sprintf("count:%d",count))
-	// 更新数据
-	err=m.Update("SET name = $1 WHERE name = $2","upName","test_appoo")
-	if err!=nil{
-		fmt.Println(err.Error())
-		return
-	}else{
-		fmt.Println("update success!")
-	}
-	// 获取信息
-	res,err:=m.Query("")
-	if err!=nil{
-		fmt.Println(err.Error())
-		return
-	}
+
+	// 查看满足条件的对象
+	res,err:=m.Query(cond)
+	assert.Equal(t,err,nil)
 	for _,obj:=range res{
-		fmt.Println(*obj.(*T_app))
+		fmt.Println(obj.(T_app))
 	}
-	err= m.Delete("where name = $1","upName")
-	if err!=nil{
-		fmt.Println(err.Error())
-		return
-	}
+	// 删除满足条件的对象
+	err= m.Delete(cond)
+	assert.Equal(t,err,nil)
+
+	// 更新数据
+	setCond:=model.DbSetCondition{}
+	setCond.Set2("name","modifyName").And2("like","name","appName456")
+	err=m.Update(setCond)
+	assert.Equal(t,err,nil)
 }
 func InsertFields(obj interface{}) []interface{} {
-	app:=obj.(*T_app)
+	app:=obj.(T_app)
 	expend := []byte{}
 	if app.Expend != nil {
 		bs, err := app.Expend.MarshalJSON()
@@ -121,7 +134,7 @@ func InsertFields(obj interface{}) []interface{} {
 }
 func QueryField2Obj(fields []interface{}) interface{} {
 	expend,_:=simplejson.NewJson(model.GetByteArr(fields[10]))
-	app:=&T_app{
+	app:=T_app{
 		ID:model.GetInt64(fields[0],0),
 		Icon:model.GetString(fields[1]),
 		AppId:model.GetString(fields[2]),
