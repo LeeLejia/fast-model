@@ -23,21 +23,20 @@ func InitDB(host, port, user, pwd, dbName string,driverName string) error {
 	Session = db
 	err = Session.Ping()
 	if err != nil {
-		go reInit(dateSource, 1)
+		go reInit(dateSource, 1, driverName)
 	}
 	return nil
 }
 
-func reInit(dateSource string, seconds int) {
+func reInit(dateSource string, seconds int, driverName string) {
 	for {
 		db, _ := sql.Open("postgres", dateSource)
-		if err := db.Ping(); err == nil {
-			Session = db
-			break
-		} else {
+		if err := db.Ping(); err != nil {
 			fmt.Println("数据库连接失败，2分钟后重试! error:"+err.Error())
 			time.Sleep(time.Minute * 2)
-			reInit(dateSource, seconds*2)
+			seconds = seconds*2
+		} else {
+			break
 		}
 	}
 }
