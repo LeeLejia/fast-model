@@ -7,7 +7,7 @@
 
 ## 使用方法
 
-导入快速模型包
+导入包
 ```go
     import "github.com/cjwddz/fast-model"
 ```
