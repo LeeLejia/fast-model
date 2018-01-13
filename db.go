@@ -35,8 +35,8 @@ func reInit(dateSource string, seconds int, driverName string) {
 			fmt.Println("数据库连接失败，2分钟后重试! error:"+err.Error())
 			time.Sleep(time.Minute * 2)
 			seconds = seconds*2
-		} else {
-			break
-		}
+			continue
+		} 
+		break
 	}
 }
