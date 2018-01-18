@@ -18,7 +18,7 @@ type DbCondition struct{
 /**
 重置条件
  */
-func (cond *DbCondition)Reset() *DbCondition{
+func (cond DbCondition)Reset() DbCondition{
 	cond.condStr = ""
 	cond.condCount=0
 	cond.order = ""
@@ -31,14 +31,14 @@ func (cond *DbCondition)Reset() *DbCondition{
 /**
 添加AND条件,compare: > < = >= <= != like
  */
-func (cond *DbCondition)And(r *http.Request,compare string, t_key string) *DbCondition{
+func (cond DbCondition)And(r *http.Request,compare string, t_key string) DbCondition{
 	return cond.andOr(r,compare,t_key,"AND")
 }
 
 /**
 添加AND条件,compare: > < = >= <= != like
  */
-func (cond *DbCondition)And2(compare string, key string,value interface{}) *DbCondition{
+func (cond DbCondition)And2(compare string, key string,value interface{}) DbCondition{
 	if cond.condStr==""{
 		// 初始化参数
 		cond.args = make([]interface{},0)
@@ -56,7 +56,7 @@ func (cond *DbCondition)And2(compare string, key string,value interface{}) *DbCo
 /**
 添加AND条件,compare: > < = >= <= != like
  */
-func (cond *DbCondition)Or2(compare string, key string,value interface{}) *DbCondition{
+func (cond DbCondition)Or2(compare string, key string,value interface{}) DbCondition{
 	if cond.condStr==""{
 		// 初始化参数
 		cond.args = make([]interface{},0)
@@ -74,14 +74,14 @@ func (cond *DbCondition)Or2(compare string, key string,value interface{}) *DbCon
 /**
 添加OR条件
  */
-func (cond *DbCondition)Or(r *http.Request,compare string, t_key string) *DbCondition{
+func (cond DbCondition)Or(r *http.Request,compare string, t_key string) DbCondition{
 	return cond.andOr(r,compare,t_key,"OR")
 }
 
 /**
 设置LIMIT语句
  */
-func (cond *DbCondition)Limit(r *http.Request,startKey string, lenKey string)*DbCondition{
+func (cond DbCondition)Limit(r *http.Request,startKey string, lenKey string)DbCondition{
 	pos:=-1
 	len :=-1
 	t,err:=strconv.Atoi(r.PostForm.Get(startKey))
@@ -101,7 +101,7 @@ func (cond *DbCondition)Limit(r *http.Request,startKey string, lenKey string)*Db
 /**
 设置LIMIT语句
  */
-func (cond *DbCondition)Limit2(count int, offset int)*DbCondition{
+func (cond DbCondition)Limit2(count int, offset int)DbCondition{
 	if count > 0{
 		cond.limit_len = count
 	}
@@ -114,7 +114,7 @@ func (cond *DbCondition)Limit2(count int, offset int)*DbCondition{
 /**
 设置order语句
  */
-func (cond *DbCondition)Order(order string)*DbCondition {
+func (cond DbCondition)Order(order string)DbCondition {
 	cond.order = order
 	return cond
 }
@@ -122,7 +122,7 @@ func (cond *DbCondition)Order(order string)*DbCondition {
 /**
 获取WHERE表达式
  */
-func (cond *DbCondition) GetCondStr()string{
+func (cond DbCondition) GetCondStr()string{
 	rs := ""
 	if cond.condCount >0{
 		is:=make([]interface{},cond.condCount)
@@ -146,7 +146,7 @@ func (cond *DbCondition) GetCondStr()string{
 /**
 获取参数
  */
-func (cond *DbCondition) GetParams() []interface{}{
+func (cond DbCondition) GetParams() []interface{}{
 	rs:=cond.args
 	if cond.limit_len>0{
 		rs=append(rs,cond.limit_len)
@@ -157,7 +157,7 @@ func (cond *DbCondition) GetParams() []interface{}{
 	return rs
 }
 
-func (cond *DbCondition)andOr(r *http.Request,compare string, t_key string,ao string) *DbCondition{
+func (cond DbCondition)andOr(r *http.Request,compare string, t_key string,ao string) DbCondition{
 	if cond.condStr==""{
 		// 初始化参数
 		cond.args = make([]interface{},0)
