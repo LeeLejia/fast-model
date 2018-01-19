@@ -238,8 +238,7 @@ func GetInt(field interface{},def int)int{
 	if rs,ok:=field.(int64);ok{
 		return int(rs)
 	}
-	fmt.Println(fmt.Println("注意，该处强转可能出现错误！请在编译前检查！值："))
-	fmt.Println(fmt.Println(field))
+	fmt.Println(fmt.Sprintf("注意，[%s]强转可能出现错误！请在编译前检查！值：[%v]","GetInt",field))
 	return def
 }
 func GetInt64(field interface{},def int64)int64{
@@ -252,8 +251,7 @@ func GetInt64(field interface{},def int64)int64{
 	if rs,ok:=field.(int);ok{
 		return int64(rs)
 	}
-	fmt.Println(fmt.Println("注意，该处强转可能出现错误！请在编译前检查！值："))
-	fmt.Println(fmt.Println(field))
+	fmt.Println(fmt.Sprintf("注意，[%s]强转可能出现错误！请在编译前检查！值：[%v]","GetInt64",field))
 	return def
 }
 func GetByteArr(field interface{})[]byte{
@@ -263,8 +261,7 @@ func GetByteArr(field interface{})[]byte{
 	if rs,ok:=field.([]byte);ok{
 		return rs
 	}
-	fmt.Println(fmt.Println("注意，该处强转可能出现错误！请在编译前检查！值："))
-	fmt.Println(fmt.Println(field))
+	fmt.Println(fmt.Sprintf("注意，[%s]强转可能出现错误！请在编译前检查！值：[%v]","GetByteArr",field))
 	return nil
 }
 func GetString(field interface{})string{
@@ -274,8 +271,7 @@ func GetString(field interface{})string{
 	if rs,ok:=field.(string);ok{
 		return rs
 	}
-	fmt.Println(fmt.Println("注意，该处强转可能出现错误！请在编译前检查！值："))
-	fmt.Println(fmt.Println(field))
+	fmt.Println(fmt.Sprintf("注意，[%s]强转可能出现错误！请在编译前检查！值：[%v]","GetString",field))
 	return ""
 }
 func GetBool(field interface{},def bool)bool{
@@ -285,8 +281,7 @@ func GetBool(field interface{},def bool)bool{
 	if rs,ok:=field.(bool);ok{
 		return rs
 	}
-	fmt.Println(fmt.Println("注意，该处强转可能出现错误！请在编译前检查！值："))
-	fmt.Println(fmt.Println(field))
+	fmt.Println(fmt.Sprintf("注意，[%s]强转可能出现错误！请在编译前检查！值：[%v]","GetBool",field))
 	return def
 }
 func GetFloat(field interface{},def float32)float32{
@@ -296,8 +291,7 @@ func GetFloat(field interface{},def float32)float32{
 	if rs,ok:=field.(float32);ok{
 		return rs
 	}
-	fmt.Println(fmt.Println("注意，该处强转可能出现错误！请在编译前检查！值："))
-	fmt.Println(fmt.Println(field))
+	fmt.Println(fmt.Sprintf("注意，[%s]强转可能出现错误！请在编译前检查！值：[%v]","GetFloat",field))
 	return def
 }
 func GetFloat64(field interface{},def float64)float64{
@@ -307,8 +301,7 @@ func GetFloat64(field interface{},def float64)float64{
 	if rs,ok:=field.(float64);ok{
 		return rs
 	}
-	fmt.Println(fmt.Println("注意，该处强转可能出现错误！请在编译前检查！值："))
-	fmt.Println(fmt.Println(field))
+	fmt.Println(fmt.Sprintf("注意，[%s]强转可能出现错误！请在编译前检查！值：[%v]","GetFloat64",field))
 	return def
 }
 func GetTime(field interface{},def time.Time)time.Time{
@@ -318,7 +311,6 @@ func GetTime(field interface{},def time.Time)time.Time{
 	if rs,ok:=field.(time.Time);ok{
 		return rs
 	}
-	fmt.Println(fmt.Println("注意，该处强转可能出现错误！请在编译前检查！值："))
-	fmt.Println(fmt.Println(field))
+	fmt.Println(fmt.Sprintf("注意，[%s]强转可能出现错误！请在编译前检查！值：[%v]","GetTime",field))
 	return def
 }
