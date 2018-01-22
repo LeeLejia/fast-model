@@ -30,7 +30,7 @@ func InitDB(host, port, user, pwd, dbName string,driverName string) error {
 
 func reInit(dateSource string, seconds int, driverName string) {
 	for {
-		db, _ := sql.Open("postgres", dateSource)
+		db, _ := sql.Open(driverName, dateSource)
 		if err := db.Ping(); err != nil {
 			fmt.Println("数据库连接失败，2分钟后重试! error:"+err.Error())
 			time.Sleep(time.Minute * 2)
