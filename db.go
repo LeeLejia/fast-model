@@ -10,20 +10,16 @@ import (
 	"time"
 )
 
-/**
-driverName 数据库驱动名字 "postgres"
- */
-var _driverName string
 var Session *sql.DB
 
 func InitDB(host, port, user, pwd, dbName string,driverName string) error {
-	_driverName = driverName
 	dateSource := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", host, port, user, pwd, dbName)
 	db, err := sql.Open(driverName, dateSource)
 	Session = db
 	err = Session.Ping()
 	if err != nil {
 		go reInit(dateSource, 1, driverName)
+		return err
 	}
 	return nil
 }
