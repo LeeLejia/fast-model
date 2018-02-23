@@ -156,7 +156,9 @@ func (cond DbCondition) GetParams() []interface{}{
 	}
 	return rs
 }
-
+/**
+如果不满足条件，不会添加到条件。
+ */
 func (cond DbCondition)andOr(r *http.Request,compare string, t_key string,ao string) DbCondition{
 	if cond.condStr==""{
 		// 初始化参数

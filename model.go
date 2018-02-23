@@ -99,9 +99,11 @@ func (m *DbModel) SetQueryColumns(columns []string,queryFileds2Obj func(fields [
 
 // 插入操作
 func (m *DbModel) Insert(obj interface{}) (err error) {
-	stmt, err := Session.Prepare(fmt.Sprintf("INSERT INTO %s(%s) "+
-		"VALUES(%s)", m.GetTableName(), m.sc.insertColumns, m.sc.insertPlaceHold))
+	sql:=fmt.Sprintf("INSERT INTO %s(%s) "+
+		"VALUES(%s)", m.GetTableName(), m.sc.insertColumns, m.sc.insertPlaceHold)
+	stmt, err := Session.Prepare(sql)
 	if err != nil {
+		fmt.Println("出错："+sql)
 		return
 	}
 	defer stmt.Close()
@@ -118,6 +120,7 @@ func (m *DbModel) Query(cond DbCondition) (result []interface{}, err error) {
 	fmt.Println(sql)
 	stmt, err := Session.Prepare(sql)
 	if err != nil {
+		fmt.Println("出错："+sql)
 		return result, err
 	}
 	defer stmt.Close()
@@ -151,8 +154,10 @@ args: 5 'cjwddz'
  */
 func (m *DbModel) Count(cond DbCondition) (count int, err error) {
 	count = 0
-	stmt,err:= Session.Prepare(fmt.Sprintf("SELECT COUNT(*) FROM %s %s", m.GetTableName(), cond.GetCondStr()))
+	sql:=fmt.Sprintf("SELECT COUNT(*) FROM %s %s", m.GetTableName(), cond.GetCondStr())
+	stmt,err:= Session.Prepare(sql)
 	if err!=nil{
+		fmt.Println("出错："+sql)
 		return 0,err
 	}
 	defer stmt.Close()
@@ -176,8 +181,10 @@ setAndCondition: SET id = $1,name=$2 where id = $3
 args: 3 'cjwddz' 5
  */
 func (m *DbModel) Update(setCond DbSetCondition) (err error) {
-	stmt, err := Session.Prepare(fmt.Sprintf("UPDATE %s %s", m.GetTableName(),setCond.GetSetCondStr()))
+	sql:=fmt.Sprintf("UPDATE %s %s", m.GetTableName(),setCond.GetSetCondStr())
+	stmt, err := Session.Prepare(sql)
 	if err != nil {
+		fmt.Println("出错："+sql)
 		return
 	}
 	defer stmt.Close()
@@ -191,8 +198,10 @@ condition: where id = $3
 args: 3 'cjwddz' 5
  */
 func (m *DbModel) Delete(cond DbCondition)error{
-	stmt,err:= Session.Prepare(fmt.Sprintf("DELETE FROM %s %s", m.GetTableName(), cond.GetCondStr()))
+	sql:=fmt.Sprintf("DELETE FROM %s %s", m.GetTableName(), cond.GetCondStr())
+	stmt,err:= Session.Prepare(sql)
 	if err!=nil{
+		fmt.Println("出错："+sql)
 		return err
 	}
 	defer stmt.Close()
@@ -206,6 +215,7 @@ func (m *DbModel) Delete(cond DbCondition)error{
 func (m *DbModel) Exe(sql string,args ...interface{})error{
 	stmt,err:= Session.Prepare(sql)
 	if err!=nil{
+		fmt.Println("出错："+sql)
 		return err
 	}
 	defer stmt.Close()
@@ -219,6 +229,7 @@ func (m *DbModel) Exe(sql string,args ...interface{})error{
 func (m *DbModel) ExeForResult(sql string,args ...interface{})(*sql2.Rows, error){
 	stmt,err:= Session.Prepare(sql)
 	if err!=nil{
+		fmt.Println("出错："+sql)
 		return nil,err
 	}
 	defer stmt.Close()
