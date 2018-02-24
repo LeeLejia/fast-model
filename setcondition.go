@@ -23,7 +23,7 @@ type DbSetCondition struct{
 /**
 添加一个设置项
  */
-func (dbSet DbSetCondition) Set(r *http.Request, t_key string) DbSetCondition {
+func (dbSet DbSetCondition) Set2(r *http.Request, t_key string) DbSetCondition {
 	if len(t_key)<=2 || t_key[1]!='_'{
 		// todo 写到系统日志
 		fmt.Println("是否错误调用了GetCondition？t_key格式为类型首写和列名，如int类型id则为i_id,再如：s_name,b_valid")
@@ -54,13 +54,13 @@ func (dbSet DbSetCondition) Set(r *http.Request, t_key string) DbSetCondition {
 	default:
 		newValue = value
 	}
-	return dbSet.Set2(field,newValue)
+	return dbSet.Set(field,newValue)
 }
 
 /**
 添加一个设置项
  */
-func (dbSet DbSetCondition) Set2(field string,newValue interface{}) DbSetCondition {
+func (dbSet DbSetCondition) Set(field string,newValue interface{}) DbSetCondition {
 	if dbSet.fields == nil{
 		dbSet.fields = make([]string,0)
 		dbSet.newValues = make([]interface{},0)
@@ -143,14 +143,14 @@ func (dbSet DbSetCondition) GetSetCondParams() []interface{}{
 /**
 添加AND条件,compare: > < = >= <= != like
  */
-func (cond DbSetCondition)And(r *http.Request,compare string, t_key string) DbSetCondition{
+func (cond DbSetCondition)And2(r *http.Request,compare string, t_key string) DbSetCondition{
 	return cond.andOr(r,compare,t_key,"AND")
 }
 
 /**
 添加AND条件,compare: > < = >= <= != like
  */
-func (cond DbSetCondition)And2(compare string, key string,value interface{}) DbSetCondition{
+func (cond DbSetCondition)And(compare string, key string,value interface{}) DbSetCondition{
 	if cond.condStr==""{
 		// 初始化参数
 		cond.args = make([]interface{},0)
@@ -168,7 +168,7 @@ func (cond DbSetCondition)And2(compare string, key string,value interface{}) DbS
 /**
 添加AND条件,compare: > < = >= <= != like
  */
-func (cond DbSetCondition)Or2(compare string, key string,value interface{}) DbSetCondition{
+func (cond DbSetCondition)Or(compare string, key string,value interface{}) DbSetCondition{
 	if cond.condStr==""{
 		// 初始化参数
 		cond.args = make([]interface{},0)
@@ -186,14 +186,14 @@ func (cond DbSetCondition)Or2(compare string, key string,value interface{}) DbSe
 /**
 添加OR条件
  */
-func (cond DbSetCondition)Or(r *http.Request,compare string, t_key string) DbSetCondition{
+func (cond DbSetCondition)Or2(r *http.Request,compare string, t_key string) DbSetCondition{
 	return cond.andOr(r,compare,t_key,"OR")
 }
 
 /**
 设置LIMIT语句
  */
-func (cond DbSetCondition)Limit(r *http.Request,startKey string, lenKey string)DbSetCondition{
+func (cond DbSetCondition)Limit2(r *http.Request,startKey string, lenKey string)DbSetCondition{
 	pos:=-1
 	len :=-1
 	t,err:=strconv.Atoi(r.PostForm.Get(startKey))
@@ -213,7 +213,7 @@ func (cond DbSetCondition)Limit(r *http.Request,startKey string, lenKey string)D
 /**
 设置LIMIT语句
  */
-func (cond DbSetCondition)Limit2(count int, offset int)DbSetCondition{
+func (cond DbSetCondition)Limit(count int, offset int)DbSetCondition{
 	if count > 0{
 		cond.limit_len = count
 	}

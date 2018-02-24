@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/bitly/go-simplejson"
 	"time"
-	".."
+	"github.com/cjwddz/fast-model"
 	"github.com/bmizerany/assert"
 )
 type T_app struct {
@@ -98,7 +98,7 @@ func TestT(t *testing.T) {
 	// 新建条件
 	cond:=model.DbCondition{}
 	// 如果是从request中获取条件，参考condition_test.go
-	cond.And2(">","id",0).And2("=","name","appName1234")
+	cond.And(">","id",0).And("=","name","appName1234")
 	count,err=m.Count(cond)
 	assert.Equal(t,err,nil)
 	fmt.Println(fmt.Sprintf("count:%d",count))
@@ -115,7 +115,7 @@ func TestT(t *testing.T) {
 
 	// 更新数据
 	setCond:=model.DbSetCondition{}
-	setCond.Set2("name","modifyName").And2("like","name","appName456")
+	setCond.Set("name","modifyName").And("like","name","appName456")
 	err=m.Update(setCond)
 	assert.Equal(t,err,nil)
 }

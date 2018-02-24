@@ -31,14 +31,14 @@ func (cond DbCondition)Reset() DbCondition{
 /**
 添加AND条件,compare: > < = >= <= != like
  */
-func (cond DbCondition)And(r *http.Request,compare string, t_key string) DbCondition{
+func (cond DbCondition)And2(r *http.Request,compare string, t_key string) DbCondition{
 	return cond.andOr(r,compare,t_key,"AND")
 }
 
 /**
 添加AND条件,compare: > < = >= <= != like
  */
-func (cond DbCondition)And2(compare string, key string,value interface{}) DbCondition{
+func (cond DbCondition)And(compare string, key string,value interface{}) DbCondition{
 	if cond.condStr==""{
 		// 初始化参数
 		cond.args = make([]interface{},0)
@@ -56,7 +56,7 @@ func (cond DbCondition)And2(compare string, key string,value interface{}) DbCond
 /**
 添加AND条件,compare: > < = >= <= != like
  */
-func (cond DbCondition)Or2(compare string, key string,value interface{}) DbCondition{
+func (cond DbCondition)Or(compare string, key string,value interface{}) DbCondition{
 	if cond.condStr==""{
 		// 初始化参数
 		cond.args = make([]interface{},0)
@@ -74,14 +74,14 @@ func (cond DbCondition)Or2(compare string, key string,value interface{}) DbCondi
 /**
 添加OR条件
  */
-func (cond DbCondition)Or(r *http.Request,compare string, t_key string) DbCondition{
+func (cond DbCondition)Or2(r *http.Request,compare string, t_key string) DbCondition{
 	return cond.andOr(r,compare,t_key,"OR")
 }
 
 /**
 设置LIMIT语句
  */
-func (cond DbCondition)Limit(r *http.Request,startKey string, lenKey string)DbCondition{
+func (cond DbCondition)Limit2(r *http.Request,startKey string, lenKey string)DbCondition{
 	pos:=-1
 	len :=-1
 	t,err:=strconv.Atoi(r.PostForm.Get(startKey))
@@ -101,7 +101,7 @@ func (cond DbCondition)Limit(r *http.Request,startKey string, lenKey string)DbCo
 /**
 设置LIMIT语句
  */
-func (cond DbCondition)Limit2(count int, offset int)DbCondition{
+func (cond DbCondition)Limit(count int, offset int)DbCondition{
 	if count > 0{
 		cond.limit_len = count
 	}
