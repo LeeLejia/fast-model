@@ -46,7 +46,7 @@ func (cond DbCondition)And(compare string, key string,value interface{}) DbCondi
 	}
 	cond.args =append(cond.args,value)
 	cond.condCount++
-	cond.condStr=fmt.Sprintf("%s AND %s %s $%%d",cond.condStr,key,compare)
+	cond.condStr=fmt.Sprintf("%s AND %s %s $%%d",cond.condStr,key,compare,cond.condCount)
 	if len(cond.condStr)>4 && cond.condStr[0:4]==" AND"{
 		cond.condStr=cond.condStr[5:]
 	}
@@ -64,7 +64,7 @@ func (cond DbCondition)Or(compare string, key string,value interface{}) DbCondit
 	}
 	cond.args =append(cond.args,value)
 	cond.condCount++
-	cond.condStr=fmt.Sprintf("%s AND %s %s $%%d",cond.condStr,key,compare)
+	cond.condStr=fmt.Sprintf("%s OR %s %s $%%d",cond.condStr,key,compare,cond.condCountm)
 	if len(cond.condStr)>4 && cond.condStr[0:4]==" OR "{
 		cond.condStr=cond.condStr[5:]
 	}

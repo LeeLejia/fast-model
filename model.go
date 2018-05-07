@@ -117,7 +117,6 @@ conditionAndLimit：where id > $1 order by  limit $2 offset $3
  */
 func (m *DbModel) Query(cond DbCondition) (result []interface{}, err error) {
 	sql:=fmt.Sprintf("SELECT %s FROM %s %s", m.sc.queryColumns, m.GetTableName(), cond.GetCondStr())
-	fmt.Println(sql)
 	stmt, err := Session.Prepare(sql)
 	if err != nil {
 		fmt.Println("出错："+sql)
