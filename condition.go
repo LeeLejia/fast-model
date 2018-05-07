@@ -65,8 +65,8 @@ func (cond DbCondition)Or(compare string, key string,value interface{}) DbCondit
 	cond.args =append(cond.args,value)
 	cond.condCount++
 	cond.condStr=fmt.Sprintf("%s OR %s %s $%%d",cond.condStr,key,compare,cond.condCountm)
-	if len(cond.condStr)>4 && cond.condStr[0:4]==" OR "{
-		cond.condStr=cond.condStr[5:]
+	if len(cond.condStr)>4 && cond.condStr[0:3]==" OR"{
+		cond.condStr=cond.condStr[3:]
 	}
 	return cond
 }
