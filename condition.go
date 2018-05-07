@@ -46,7 +46,7 @@ func (cond DbCondition)And(compare string, key string,value interface{}) DbCondi
 	}
 	cond.args =append(cond.args,value)
 	cond.condCount++
-	cond.condStr=fmt.Sprintf("%s AND %s %s $%%d",cond.condStr,key,compare,cond.condCount)
+	cond.condStr=fmt.Sprintf("%s AND %s %s $%d",cond.condStr,key,compare,cond.condCount)
 	if len(cond.condStr)>4 && cond.condStr[0:4]==" AND"{
 		cond.condStr=cond.condStr[5:]
 	}
@@ -64,7 +64,7 @@ func (cond DbCondition)Or(compare string, key string,value interface{}) DbCondit
 	}
 	cond.args =append(cond.args,value)
 	cond.condCount++
-	cond.condStr=fmt.Sprintf("%s OR %s %s $%%d",cond.condStr,key,compare,cond.condCountm)
+	cond.condStr=fmt.Sprintf("%s OR %s %s $%d",cond.condStr,key,compare,cond.condCount)
 	if len(cond.condStr)>4 && cond.condStr[0:3]==" OR"{
 		cond.condStr=cond.condStr[3:]
 	}
@@ -123,16 +123,7 @@ func (cond DbCondition)Order(order string)DbCondition {
 获取WHERE表达式
  */
 func (cond DbCondition) GetCondStr()string{
-	rs := ""
-	if cond.condCount >0{
-		is:=make([]interface{},cond.condCount)
-		for i:=0;i<cond.condCount;i++{
-			is[i] = i+1
-		}
-		rs = fmt.Sprintf("WHERE %s ",cond.condStr)
-		rs = fmt.Sprintf(rs,is...)
-	}
-	rs +=cond.order
+	rs := fmt.Sprintf("WHERE %s %s",cond.condStr,cond.order)
 	if cond.limit_pos>0 && cond.limit_len>0{
 		return fmt.Sprintf(" %s limit $%d offset $%d",rs,cond.condCount+1,cond.condCount+2)
 	}else if cond.limit_pos>0{
@@ -166,7 +157,6 @@ func (cond DbCondition)andOr(r *http.Request,compare string, t_key string,ao str
 		cond.condCount=0
 	}
 	if len(t_key)<=2 || t_key[1]!='_'{
-		// todo 写到系统日志
 		fmt.Println("是否错误调用了GetCondition？t_key格式为类型首写和列名，如int类型id则为i_id,再如：s_name,b_valid")
 		return cond
 	}
@@ -183,7 +173,7 @@ func (cond DbCondition)andOr(r *http.Request,compare string, t_key string,ao str
 			cond.args =append(cond.args,false)
 		}
 		cond.condCount++
-		cond.condStr=fmt.Sprintf("%s %s %s %s $%%d",cond.condStr,ao,t,compare)
+		cond.condStr=fmt.Sprintf("%s %s %s %s $%d",cond.condStr,ao,t,compare,cond.condCount)
 	case 'i':
 		i,err:=strconv.Atoi(value)
 		if err!=nil{
@@ -193,16 +183,16 @@ func (cond DbCondition)andOr(r *http.Request,compare string, t_key string,ao str
 		}
 		cond.args =append(cond.args,i)
 		cond.condCount++
-		cond.condStr=fmt.Sprintf("%s %s %s %s $%%d",cond.condStr,ao,t,compare)
+		cond.condStr=fmt.Sprintf("%s %s %s %s $%d",cond.condStr,ao,t,compare,cond.condCount)
 	default:
 		if strings.ToLower(compare)=="like"{
 			cond.args =append(cond.args,"%"+value+"%")
 			cond.condCount++
-			cond.condStr=fmt.Sprintf("%s %s %s like $%%d",cond.condStr,ao,t)
+			cond.condStr=fmt.Sprintf("%s %s %s like $%d",cond.condStr,ao,t,cond.condCount)
 		}else{
 			cond.args =append(cond.args,value)
 			cond.condCount++
-			cond.condStr=fmt.Sprintf("%s %s %s %s $%%d",cond.condStr,ao,t,compare)
+			cond.condStr=fmt.Sprintf("%s %s %s %s $%d",cond.condStr,ao,t,compare,cond.condCount)
 		}
 	}
 	if len(cond.condStr)>4 && (cond.condStr[0:4]==" AND" || cond.condStr[0:4]==" OR "){
