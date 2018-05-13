@@ -124,6 +124,9 @@ func (cond DbCondition)Order(order string)DbCondition {
  */
 func (cond DbCondition) GetCondStr()string{
 	rs := fmt.Sprintf("WHERE %s %s",cond.condStr,cond.order)
+	if cond.condStr == ""{
+		rs = fmt.Sprintf("%s",cond.order)
+	}
 	if cond.limit_pos>0 && cond.limit_len>0{
 		return fmt.Sprintf(" %s limit $%d offset $%d",rs,cond.condCount+1,cond.condCount+2)
 	}else if cond.limit_pos>0{
